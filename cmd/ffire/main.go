@@ -182,6 +182,20 @@ func (g Grid) Format(state fmt.State, c rune) {
 	}
 }
 
+// An automaton
+type Automaton struct {
+	next, now Grid
+}
+
+func NewAutomaton(g Grid) (a *Automaton) {
+
+	a = new(Automaton)
+	a.now = g
+	a.next = g.Copy()
+
+	return
+}
+
 func main() {
 
 	var g Grid
