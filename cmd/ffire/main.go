@@ -182,6 +182,12 @@ func (g Grid) Format(state fmt.State, c rune) {
 	}
 }
 
+// A neighbourhood
+type Neighbourhood interface {
+	Size() int
+	For(g Grid, i, j int, ns []Cell)
+}
+
 // An automaton
 type Automaton struct {
 	next, now Grid
