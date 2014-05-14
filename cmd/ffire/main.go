@@ -270,6 +270,19 @@ func (auto *Automaton) Step(step func(Cell, []Cell) Cell) {
 	auto.next, auto.now = auto.now, auto.next
 }
 
+func (auto *Automaton) Run(
+	steps int,
+	step func(c Cell, ns []Cell) Cell,
+	each func(then, now Grid),
+) {
+
+	for i := 0; i < steps; i++ {
+
+		auto.Step(step)
+		each(auto.next, auto.now)
+	}
+}
+
 func main() {
 
 	var (
