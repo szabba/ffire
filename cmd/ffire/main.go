@@ -268,12 +268,28 @@ func Hell(c Cell, ns []Cell) Cell {
 
 func main() {
 
-	var g Grid
+	var (
+		steps = 10
+		g     Grid
+	)
 	fmt.Scan(&g)
 
 	auto := NewAutomaton(g, Moore{})
 
-	auto.Step(Hell)
+	run := 0
+	auto.Run(
+		steps,
+		Hell,
+		func(then, now Grid) {
 
-	fmt.Println(auto.now)
+			run++
+
+			fmt.Print(then)
+			fmt.Println()
+
+			if run == steps {
+				fmt.Print(now)
+			}
+		},
+	)
 }
