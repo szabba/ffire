@@ -253,11 +253,16 @@ func NewAutomaton(g Grid, n Neighbourhood) (a *Automaton) {
 
 func main() {
 
-	var g Grid
-	_, err := fmt.Scan(&g)
-	if err != nil {
-		fmt.Fprint(os.Stderr, err)
-	} else {
-		fmt.Println(g)
-	}
+	var (
+		m    Moore
+		g    Grid
+		i, j int
+	)
+	cs := make([]Cell, m.Size())
+
+	fmt.Scan(&g, &i, &j)
+	fmt.Println(g)
+
+	m.For(g, i, j, cs)
+	fmt.Println(cs)
 }
