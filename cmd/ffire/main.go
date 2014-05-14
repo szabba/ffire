@@ -109,6 +109,22 @@ func (g Grid) Size() (width, height int) {
 	return
 }
 
+func (g Grid) Copy() (g_ Grid) {
+
+	w, h := g.Size()
+
+	g_ = NewGrid(w, h)
+
+	for i := 0; i < h; i++ {
+		for j := 0; j < w; j++ {
+
+			g_[i][j] = g[i][j]
+		}
+	}
+
+	return
+}
+
 func (g *Grid) Scan(state fmt.ScanState, verb rune) error {
 
 	var w, h int
