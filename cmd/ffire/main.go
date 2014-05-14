@@ -251,6 +251,25 @@ func NewAutomaton(g Grid, n Neighbourhood) (a *Automaton) {
 	return
 }
 
+func (auto *Automaton) Step(step func(Cell, []Cell) Cell) {
+
+	w, h := auto.now.Size()
+	ns := make([]Cell, auto.neighbourhood.Size())
+
+	for i := 0; i < h; i++ {
+		for j := 0; j < w; j++ {
+
+			auto.neighbourhood.For(auto.now, i, j, ns)
+
+			auto.next[i][j] = step(
+				auto.now[i][j], ns,
+			)
+		}
+	}
+
+	auto.next, auto.now = auto.now, auto.next
+}
+
 func main() {
 
 	var (
