@@ -195,7 +195,24 @@ func (_ Moore) Size() int {
 	return 8
 }
 
-func (_ Moore) For(g Grid, i, j int, ns []Cell) {
+func wrap(from, delta, width int) int {
+
+	max := width - 1
+
+	for from+delta > max {
+		delta -= width
+	}
+
+	for from+delta < 0 {
+		delta += width
+	}
+
+	return from + delta
+}
+
+func (m Moore) For(g Grid, i, j int, ns []Cell) {
+
+	w, h := g.Size()
 
 	k := 0
 	for p := -1; p < 2; p++ {
@@ -203,7 +220,15 @@ func (_ Moore) For(g Grid, i, j int, ns []Cell) {
 
 			if !(q == 0 && p == 0) {
 
-				ns[k] = g[i+p][j+q]
+				r := wrap(i, p, w)
+				s := wrap(j, q, h)
+
+				fmt.Fprintln(
+					os.Stderr,
+					"\t", r, s,
+				)
+
+				ns[k] = g[r][s]
 				k++
 			}
 		}
