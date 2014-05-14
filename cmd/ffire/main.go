@@ -188,6 +188,28 @@ type Neighbourhood interface {
 	For(g Grid, i, j int, ns []Cell)
 }
 
+// The Moore neighbourhood
+type Moore struct{}
+
+func (_ Moore) Size() int {
+	return 8
+}
+
+func (_ Moore) For(g Grid, i, j int, ns []Cell) {
+
+	k := 0
+	for p := -1; p < 2; p++ {
+		for q := -1; q < 2; q++ {
+
+			if !(q == 0 && p == 0) {
+
+				ns[k] = g[i+p][j+q]
+				k++
+			}
+		}
+	}
+}
+
 // An automaton
 type Automaton struct {
 	next, now Grid
