@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 )
 
 // Automaton cell
@@ -204,13 +203,8 @@ func (m Moore) For(g Grid, i, j int, ns []Cell) {
 
 			if !(q == 0 && p == 0) {
 
-				r := wrap(i, p, w)
-				s := wrap(j, q, h)
-
-				fmt.Fprintln(
-					os.Stderr,
-					"\t", r, s,
-				)
+				r := wrap(i, p, h)
+				s := wrap(j, q, w)
 
 				ns[k] = g[r][s]
 				k++
