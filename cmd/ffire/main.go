@@ -5,11 +5,11 @@ import (
 	"os"
 )
 
-// Kind of content a cell can be filled with
-type Content uint
+// Automaton cell
+type Cell uint
 
 const (
-	Tree Content = iota
+	Tree Cell = iota
 	Space
 	Fire
 	Ash
@@ -17,21 +17,7 @@ const (
 	T, S, F, A = 'T', 'S', 'F', 'A'
 )
 
-// An automaton cell
-type Cell struct {
-	Content Content
-	Phase   int
-}
-
 func (c *Cell) Scan(state fmt.ScanState, verb rune) error {
-
-	//if verb != 'q' {
-
-	//	return fmt.Errorf(
-	//		"'%c' is not a verb for Cells",
-	//		verb,
-	//	)
-	//}
 
 	state.SkipSpace()
 
@@ -42,19 +28,19 @@ func (c *Cell) Scan(state fmt.ScanState, verb rune) error {
 
 	} else if r == T {
 
-		c.Content = Tree
+		*c = Tree
 
 	} else if r == S {
 
-		c.Content = Space
+		*c = Space
 
 	} else if r == F {
 
-		c.Content = Fire
+		*c = Fire
 
 	} else if r == A {
 
-		c.Content = Ash
+		*c = Ash
 
 	} else {
 
@@ -65,26 +51,24 @@ func (c *Cell) Scan(state fmt.ScanState, verb rune) error {
 		)
 	}
 
-	_, err = fmt.Fscan(state, &c.Phase)
-
-	return err
+	return nil
 }
 
 func (c Cell) String() string {
 
 	var r rune
 
-	if c.Content == Tree {
+	if c == Tree {
 		r = T
-	} else if c.Content == Fire {
+	} else if c == Fire {
 		r = F
-	} else if c.Content == Space {
+	} else if c == Space {
 		r = S
-	} else if c.Content == Ash {
+	} else if c == Ash {
 		r = A
 	}
 
-	return fmt.Sprintf("%c %d", r, c.Phase)
+	return fmt.Sprintf("%c", r)
 }
 
 // A square grid of cells
