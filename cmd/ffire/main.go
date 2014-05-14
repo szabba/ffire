@@ -267,6 +267,11 @@ func (auto *Automaton) Run(
 	}
 }
 
+func Hell(c Cell, ns []Cell) Cell {
+
+	return Fire
+}
+
 func main() {
 
 	var (
