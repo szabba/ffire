@@ -212,14 +212,16 @@ func (_ Moore) For(g Grid, i, j int, ns []Cell) {
 
 // An automaton
 type Automaton struct {
-	next, now Grid
+	next, now     Grid
+	neighbourhood Neighbourhood
 }
 
-func NewAutomaton(g Grid) (a *Automaton) {
+func NewAutomaton(g Grid, n Neighbourhood) (a *Automaton) {
 
 	a = new(Automaton)
 	a.now = g
 	a.next = g.Copy()
+	a.neighbourhood = n
 
 	return
 }
