@@ -266,6 +266,40 @@ func Hell(c Cell, ns []Cell) Cell {
 	return Fire
 }
 
+func Spread(c Cell, ns []Cell) Cell {
+
+	if c == Space || c == Ash {
+		return c
+	}
+
+	fires := 0
+	if c == Fire {
+
+		fires++
+	}
+	for _, n := range ns {
+		if n == Fire {
+
+			fires++
+		}
+	}
+
+	if c == Tree {
+
+		if fires > 0 {
+
+			return Fire
+		}
+		return Tree
+	}
+
+	if fires > 6 {
+
+		return Ash
+	}
+	return Fire
+}
+
 func main() {
 
 	var (
@@ -279,7 +313,7 @@ func main() {
 	run := 0
 	auto.Run(
 		steps,
-		Hell,
+		Spread,
 		func(then, now Grid) {
 
 			run++
