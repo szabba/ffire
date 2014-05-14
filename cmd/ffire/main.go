@@ -274,16 +274,12 @@ func Hell(c Cell, ns []Cell) Cell {
 
 func main() {
 
-	var (
-		m    Moore
-		g    Grid
-		i, j int
-	)
-	cs := make([]Cell, m.Size())
+	var g Grid
+	fmt.Scan(&g)
 
-	fmt.Scan(&g, &i, &j)
-	fmt.Println(g)
+	auto := NewAutomaton(g, Moore{})
 
-	m.For(g, i, j, cs)
-	fmt.Println(cs)
+	auto.Step(Hell)
+
+	fmt.Println(auto.now)
 }
