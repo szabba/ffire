@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/szabba/ffire/forest"
 	"math/rand"
@@ -179,12 +180,17 @@ func SetFireToTheRain() func(forest.Cell, []forest.Cell) forest.Cell {
 	}
 }
 
+var steps int
+
+func init() {
+	flag.IntVar(&steps, "steps", 20, "number of steps to perform")
+
+	flag.Parse()
+}
+
 func main() {
 
-	var (
-		steps = 200
-		g     forest.Grid
-	)
+	var g forest.Grid
 	fmt.Scan(&g)
 
 	auto := NewAutomaton(g, Moore{})
