@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/szabba/ffire/forest"
 	"image"
@@ -25,7 +26,19 @@ func cellColor(cell forest.Cell) color.Color {
 	return color.NRGBA{255, 0, 255, 255}
 }
 
-const nameFormat = "forest%07d.png"
+var (
+	maxZeros   int
+	nameFormat string
+)
+
+func init() {
+
+	flag.IntVar(&maxZeros, "zeros", 4, "How many zeros leading zeros to put in filenames?")
+
+	flag.Parse()
+
+	nameFormat = fmt.Sprintf("forest_%%0%dd.png", maxZeros)
+}
 
 func main() {
 
