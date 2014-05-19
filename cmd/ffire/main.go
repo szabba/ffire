@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
+	"time"
 )
 
 // Automaton cell
@@ -300,10 +302,47 @@ func Spread(c Cell, ns []Cell) Cell {
 	return Fire
 }
 
+func SetFireToTheRain() func(Cell, []Cell) Cell {
+
+	rng := rand.New(rand.NewSource(time.Now().Unix()))
+
+	return func(c Cell, ns []Cell) Cell {
+
+		fires := 0
+		for _, n := range ns {
+			if n == Fire {
+				fires++
+			}
+		}
+
+		p := float64(fires) / 8
+
+		if fires == 0 || c == Space || c == Ash {
+
+			return c
+
+		} else if c == Fire {
+
+			return Ash
+
+		} else {
+
+			r := rng.Float64()
+
+			if r <= p {
+
+				return Fire
+			}
+
+			return c
+		}
+	}
+}
+
 func main() {
 
 	var (
-		steps = 10
+		steps = 100
 		g     Grid
 	)
 	fmt.Scan(&g)
@@ -313,13 +352,15 @@ func main() {
 	run := 0
 	auto.Run(
 		steps,
-		Spread,
+		SetFireToTheRain(),
 		func(then, now Grid) {
 
 			run++
 
 			fmt.Print(then)
 			fmt.Println()
+
+			fmt.Scanf("\n")
 
 			if run == steps {
 				fmt.Print(now)
