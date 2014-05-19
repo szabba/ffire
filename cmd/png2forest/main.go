@@ -47,7 +47,7 @@ func main() {
 
 			red, _, _, _ := color.RGBA()
 
-			if red == 0 {
+			if red != 0 {
 				fmt.Print("S")
 			} else {
 				if rand.Float64() < FIRE_P {
