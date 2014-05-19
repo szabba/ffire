@@ -2,175 +2,15 @@ package main
 
 import (
 	"fmt"
+	"github.com/szabba/ffire/forest"
 	"math/rand"
 	"time"
 )
 
-// Automaton cell
-type Cell uint
-
-const (
-	Tree Cell = iota
-	Space
-	Fire
-	Ash
-
-	T, S, F, A = 'T', 'S', 'F', 'A'
-)
-
-func (c *Cell) Scan(state fmt.ScanState, verb rune) error {
-
-	state.SkipSpace()
-
-	r, _, err := state.ReadRune()
-	if err != nil {
-
-		return err
-
-	} else if r == T {
-
-		*c = Tree
-
-	} else if r == S {
-
-		*c = Space
-
-	} else if r == F {
-
-		*c = Fire
-
-	} else if r == A {
-
-		*c = Ash
-
-	} else {
-
-		state.UnreadRune()
-		return fmt.Errorf(
-			"The rune '%c' does not represent a cell's content.",
-			r,
-		)
-	}
-
-	return nil
-}
-
-func (c Cell) String() string {
-
-	var r rune
-
-	if c == Tree {
-		r = T
-	} else if c == Fire {
-		r = F
-	} else if c == Space {
-		r = S
-	} else if c == Ash {
-		r = A
-	}
-
-	return fmt.Sprintf("%c", r)
-}
-
-// A square grid of cells
-type Grid [][]Cell
-
-func NewGrid(width, height int) Grid {
-
-	g := make([][]Cell, height)
-
-	for i, _ := range g {
-
-		g[i] = make([]Cell, width)
-	}
-
-	return Grid(g)
-}
-
-func (g Grid) Size() (width, height int) {
-
-	height = len(g)
-	width = len(g[0])
-	return
-}
-
-func (g Grid) Copy() (g_ Grid) {
-
-	w, h := g.Size()
-
-	g_ = NewGrid(w, h)
-
-	for i := 0; i < h; i++ {
-		for j := 0; j < w; j++ {
-
-			g_[i][j] = g[i][j]
-		}
-	}
-
-	return
-}
-
-func (g *Grid) Scan(state fmt.ScanState, verb rune) error {
-
-	var w, h int
-
-	_, err := fmt.Fscan(state, &w)
-	defer func() {
-		if err != nil {
-			g = nil
-		}
-	}()
-	if err != nil {
-		return err
-	}
-
-	_, err = fmt.Fscan(state, &h)
-	if err != nil {
-		return err
-	}
-
-	*g = NewGrid(w, h)
-
-	var c Cell
-	for i := 0; i < h; i++ {
-		for j := 0; j < w; j++ {
-
-			_, err = fmt.Fscan(state, &c)
-			if err != nil {
-				return err
-			}
-
-			(*g)[i][j] = c
-		}
-	}
-
-	return err
-}
-
-func (g Grid) Format(state fmt.State, c rune) {
-
-	w, h := g.Size()
-	fmt.Fprintf(state, "%d %d\n", w, h)
-
-	for i := 0; i < h; i++ {
-		for j := 0; j < w; j++ {
-
-			fmt.Fprintf(state, "%s", g[i][j])
-
-			if j+1 == w {
-				fmt.Fprintln(state)
-
-			} else {
-				fmt.Fprint(state, " ")
-			}
-		}
-	}
-}
-
 // A neighbourhood
 type Neighbourhood interface {
 	Size() int
-	For(g Grid, i, j int, ns []Cell)
+	For(g forest.Grid, i, j int, ns []forest.Cell)
 }
 
 // The Moore neighbourhood
@@ -195,7 +35,7 @@ func wrap(from, delta, width int) int {
 	return from + delta
 }
 
-func (m Moore) For(g Grid, i, j int, ns []Cell) {
+func (m Moore) For(g forest.Grid, i, j int, ns []forest.Cell) {
 
 	w, h := g.Size()
 
@@ -217,11 +57,11 @@ func (m Moore) For(g Grid, i, j int, ns []Cell) {
 
 // An automaton
 type Automaton struct {
-	next, now     Grid
+	next, now     forest.Grid
 	neighbourhood Neighbourhood
 }
 
-func NewAutomaton(g Grid, n Neighbourhood) (a *Automaton) {
+func NewAutomaton(g forest.Grid, n Neighbourhood) (a *Automaton) {
 
 	a = new(Automaton)
 	a.now = g
@@ -231,10 +71,10 @@ func NewAutomaton(g Grid, n Neighbourhood) (a *Automaton) {
 	return
 }
 
-func (auto *Automaton) Step(step func(Cell, []Cell) Cell) {
+func (auto *Automaton) Step(step func(forest.Cell, []forest.Cell) forest.Cell) {
 
 	w, h := auto.now.Size()
-	ns := make([]Cell, auto.neighbourhood.Size())
+	ns := make([]forest.Cell, auto.neighbourhood.Size())
 
 	for i := 0; i < h; i++ {
 		for j := 0; j < w; j++ {
@@ -252,8 +92,8 @@ func (auto *Automaton) Step(step func(Cell, []Cell) Cell) {
 
 func (auto *Automaton) Run(
 	steps int,
-	step func(c Cell, ns []Cell) Cell,
-	each func(then, now Grid),
+	step func(c forest.Cell, ns []forest.Cell) forest.Cell,
+	each func(then, now forest.Grid),
 ) {
 
 	for i := 0; i < steps; i++ {
@@ -263,67 +103,67 @@ func (auto *Automaton) Run(
 	}
 }
 
-func Hell(c Cell, ns []Cell) Cell {
+func Hell(c forest.Cell, ns []forest.Cell) forest.Cell {
 
-	return Fire
+	return forest.Fire
 }
 
-func Spread(c Cell, ns []Cell) Cell {
+func Spread(c forest.Cell, ns []forest.Cell) forest.Cell {
 
-	if c == Space || c == Ash {
+	if c == forest.Space || c == forest.Ash {
 		return c
 	}
 
 	fires := 0
-	if c == Fire {
+	if c == forest.Fire {
 
 		fires++
 	}
 	for _, n := range ns {
-		if n == Fire {
+		if n == forest.Fire {
 
 			fires++
 		}
 	}
 
-	if c == Tree {
+	if c == forest.Tree {
 
 		if fires > 0 {
 
-			return Fire
+			return forest.Fire
 		}
-		return Tree
+		return forest.Tree
 	}
 
 	if fires > 6 {
 
-		return Ash
+		return forest.Ash
 	}
-	return Fire
+	return forest.Fire
 }
 
-func SetFireToTheRain() func(Cell, []Cell) Cell {
+func SetFireToTheRain() func(forest.Cell, []forest.Cell) forest.Cell {
 
 	rng := rand.New(rand.NewSource(time.Now().Unix()))
 
-	return func(c Cell, ns []Cell) Cell {
+	return func(c forest.Cell, ns []forest.Cell) forest.Cell {
 
 		fires := 0
 		for _, n := range ns {
-			if n == Fire {
+			if n == forest.Fire {
 				fires++
 			}
 		}
 
 		p := float64(fires) / 8
 
-		if fires == 0 || c == Space || c == Ash {
+		if fires == 0 || c == forest.Space || c == forest.Ash {
 
 			return c
 
-		} else if c == Fire {
+		} else if c == forest.Fire {
 
-			return Ash
+			return forest.Ash
 
 		} else {
 
@@ -331,7 +171,7 @@ func SetFireToTheRain() func(Cell, []Cell) Cell {
 
 			if r <= p {
 
-				return Fire
+				return forest.Fire
 			}
 
 			return c
@@ -343,7 +183,7 @@ func main() {
 
 	var (
 		steps = 100
-		g     Grid
+		g     forest.Grid
 	)
 	fmt.Scan(&g)
 
@@ -353,7 +193,7 @@ func main() {
 	auto.Run(
 		steps,
 		SetFireToTheRain(),
-		func(then, now Grid) {
+		func(then, now forest.Grid) {
 
 			run++
 
