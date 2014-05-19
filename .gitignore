@@ -1,0 +1,11 @@
+# Binaries
+ffire
+png2forest
+forest2png
+
+# Vim temporary files
+*.sw?
+
+# Image files
+*.png
+*.gif
