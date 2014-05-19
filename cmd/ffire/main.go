@@ -182,7 +182,7 @@ func SetFireToTheRain() func(forest.Cell, []forest.Cell) forest.Cell {
 func main() {
 
 	var (
-		steps = 100
+		steps = 200
 		g     forest.Grid
 	)
 	fmt.Scan(&g)
@@ -199,8 +199,6 @@ func main() {
 
 			fmt.Print(then)
 			fmt.Println()
-
-			fmt.Scanf("\n")
 
 			if run == steps {
 				fmt.Print(now)
