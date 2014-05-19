@@ -14,7 +14,7 @@ func Size(bds image.Rectangle) (width, height int) {
 	return bds.Max.X - bds.Min.X, bds.Max.Y - bds.Min.Y
 }
 
-const FIRE_P = 0.1
+const FIRE_P = 0.01
 
 func main() {
 
