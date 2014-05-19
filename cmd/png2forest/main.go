@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"image"
 	_ "image/png"
@@ -14,7 +15,13 @@ func Size(bds image.Rectangle) (width, height int) {
 	return bds.Max.X - bds.Min.X, bds.Max.Y - bds.Min.Y
 }
 
-const FIRE_P = 0.01
+var fire_prob float64
+
+func init() {
+	flag.Float64Var(&fire_prob, "p", 0.01, "probability of fire")
+
+	flag.Parse()
+}
 
 func main() {
 
@@ -50,7 +57,7 @@ func main() {
 			if red != 0 {
 				fmt.Print("S")
 			} else {
-				if rand.Float64() < FIRE_P {
+				if rand.Float64() < fire_prob {
 					fmt.Print("F")
 				} else {
 					fmt.Print("T")
