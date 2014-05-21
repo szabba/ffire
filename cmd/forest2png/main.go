@@ -46,7 +46,7 @@ func cellColor(cell forest.Cell) color.Color {
 	} else if cell == forest.Ash {
 		return colorval.Ash
 
-	} else if cell == forest.Fire {
+	} else if cell == forest.Fire || cell == forest.Ready {
 		return colorval.Fire
 	}
 
