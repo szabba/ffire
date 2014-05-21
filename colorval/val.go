@@ -1,6 +1,7 @@
 package colorval
 
 import (
+	"flag"
 	"fmt"
 	"image/color"
 )
@@ -58,4 +59,21 @@ func (nrgba *NRGBA) Set(in string) error {
 	}
 
 	return nil
+}
+
+var (
+	Tree  = NRGBA{color.NRGBA{0, 127, 0, 255}}
+	Space = NRGBA{color.NRGBA{127, 255, 50, 255}}
+	Fire  = NRGBA{color.NRGBA{255, 0, 0, 255}}
+	Ash   = NRGBA{color.NRGBA{127, 127, 127, 255}}
+	Error = NRGBA{color.NRGBA{255, 0, 255, 255}}
+)
+
+func init() {
+
+	flag.Var(&Tree, "tree-color", "The color of trees")
+	flag.Var(&Space, "space-color", "The color of free space")
+	flag.Var(&Fire, "fire-color", "The color of fire")
+	flag.Var(&Ash, "ash-color", "The color of ashes")
+	flag.Var(&Error, "err-color", "Color for errnoerously encoded cells")
 }

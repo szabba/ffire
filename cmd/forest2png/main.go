@@ -26,12 +26,6 @@ func init() {
 
 	flag.IntVar(&maxZeros, "zeros", 4, "How many zeros leading zeros to put in filenames?")
 
-	flag.Var(&treeColor, "tree-color", "The color of trees")
-	flag.Var(&spaceColor, "space-color", "The color of free space")
-	flag.Var(&fireColor, "fire-color", "The color of fire")
-	flag.Var(&ashColor, "ash-color", "The color of ashes")
-	flag.Var(&errorColor, "err-color", "Color for errnoerously encoded cells")
-
 	flag.Parse()
 
 	nameFormat = fmt.Sprintf("forest_%%0%dd.png", maxZeros)
@@ -40,19 +34,19 @@ func init() {
 func cellColor(cell forest.Cell) color.Color {
 
 	if cell == forest.Tree {
-		return treeColor
+		return colorval.Tree
 
 	} else if cell == forest.Space {
-		return spaceColor
+		return colorval.Space
 
 	} else if cell == forest.Ash {
-		return ashColor
+		return colorval.Ash
 
 	} else if cell == forest.Fire {
-		return fireColor
+		return colorval.Fire
 	}
 
-	return errorColor
+	return colorval.Error
 }
 
 func main() {
