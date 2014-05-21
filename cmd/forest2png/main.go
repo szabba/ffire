@@ -76,6 +76,4 @@ func main() {
 
 		i++
 	}
-
-	fmt.Fprint(os.Stderr, err.Error())
 }
