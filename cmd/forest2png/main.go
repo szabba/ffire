@@ -24,11 +24,15 @@ var (
 
 func init() {
 
+	var prefix string
+
+	flag.StringVar(&prefix, "prefix", "forest", "Prefix for output file names")
+
 	flag.IntVar(&maxZeros, "zeros", 4, "How many zeros leading zeros to put in filenames?")
 
 	flag.Parse()
 
-	nameFormat = fmt.Sprintf("forest_%%0%dd.png", maxZeros)
+	nameFormat = fmt.Sprintf("%s_%%0%dd.png", prefix, maxZeros)
 }
 
 func cellColor(cell forest.Cell) color.Color {
