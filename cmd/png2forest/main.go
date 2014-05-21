@@ -3,12 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/szabba/ffire/colorval"
 	"image"
 	"image/color"
 	_ "image/png"
-	"math/rand"
 	"os"
-	"time"
 )
 
 func EqualColors(a, b color.Color) bool {
@@ -24,19 +23,9 @@ func Size(bds image.Rectangle) (width, height int) {
 	return bds.Max.X - bds.Min.X, bds.Max.Y - bds.Min.Y
 }
 
-var fire_prob float64
+func PrintImage(filename string) {
 
-func init() {
-	flag.Float64Var(&fire_prob, "p", 0.01, "probability of fire")
-
-	flag.Parse()
-}
-
-func main() {
-
-	rand.Seed(time.Now().Unix())
-
-	imgFile, err := os.Open("forest.png")
+	imgFile, err := os.Open(filename)
 	if err != nil {
 
 		fmt.Fprint(os.Stderr, err.Error())
@@ -61,16 +50,28 @@ func main() {
 
 			color := img.At(x, y)
 
-			red, _, _, _ := color.RGBA()
-
-			if red != 0 {
+			if EqualColors(colorval.Space, color) {
 				fmt.Print("S")
+
+			} else if EqualColors(colorval.Tree, color) {
+				fmt.Print("T")
+
+			} else if EqualColors(colorval.Fire, color) {
+				fmt.Print("F")
+
+			} else if EqualColors(colorval.Ash, color) {
+				fmt.Print("A")
+
 			} else {
-				if rand.Float64() < fire_prob {
-					fmt.Print("F")
-				} else {
-					fmt.Print("T")
-				}
+
+				r, g, b, a := color.RGBA()
+
+				fmt.Fprintf(
+					os.Stderr,
+					"Don't know how to interpret color #%x%x%x%x",
+					r, g, b, a,
+				)
+				os.Exit(1)
 			}
 
 			if x+1 == bds.Max.X {
@@ -79,5 +80,21 @@ func main() {
 				fmt.Print(" ")
 			}
 		}
+	}
+}
+
+var fire_prob float64
+
+func init() {
+	flag.Float64Var(&fire_prob, "p", 0.01, "probability of fire")
+
+	flag.Parse()
+}
+
+func main() {
+
+	for _, arg := range flag.Args() {
+
+		PrintImage(arg)
 	}
 }
