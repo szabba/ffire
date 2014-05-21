@@ -147,36 +147,49 @@ func SetFireToTheRain() func(forest.Cell, []forest.Cell) forest.Cell {
 
 	rng := rand.New(rand.NewSource(time.Now().Unix()))
 
-	return func(c forest.Cell, ns []forest.Cell) forest.Cell {
+	return func(cell forest.Cell, ns []forest.Cell) forest.Cell {
 
 		fires := 0
 		for _, n := range ns {
-			if n == forest.Fire {
+			if n == forest.Fire || n == forest.Ready {
 				fires++
 			}
 		}
 
 		p := float64(fires) / 8
 
-		if fires == 0 || c == forest.Space || c == forest.Ash {
+		if cell == forest.Space || cell == forest.Ash {
 
-			return c
+			return cell
 
-		} else if c == forest.Fire {
+		} else if fires > 1 {
 
-			return forest.Ash
+			if cell == forest.Tree {
 
-		} else {
+				if rng.Float64() < p {
 
-			r := rng.Float64()
+					return forest.Fire
+				}
 
-			if r <= p {
+				return forest.Tree
 
-				return forest.Fire
+			} else if cell == forest.Fire {
+
+				return forest.Ready
+
+			} else if cell == forest.Ready {
+
+				return forest.Ash
 			}
-
-			return c
 		}
+
+		if cell == forest.Tree {
+
+			return forest.Tree
+		}
+
+		// cell == forest.Fire || cell == forest.Ready
+		return forest.Fire
 	}
 }
 
