@@ -4,11 +4,20 @@ import (
 	"flag"
 	"fmt"
 	"image"
+	"image/color"
 	_ "image/png"
 	"math/rand"
 	"os"
 	"time"
 )
+
+func EqualColors(a, b color.Color) bool {
+
+	aR, aG, aB, aA := a.RGBA()
+	bR, bG, bB, bA := b.RGBA()
+
+	return aR == bR && aG == bG && aB == bB && aA == bA
+}
 
 func Size(bds image.Rectangle) (width, height int) {
 
