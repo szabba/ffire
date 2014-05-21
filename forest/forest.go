@@ -11,9 +11,10 @@ const (
 	Tree Cell = iota
 	Space
 	Fire
+	Ready
 	Ash
 
-	T, S, F, A = 'T', 'S', 'F', 'A'
+	T, S, F, R, A = 'T', 'S', 'F', 'R', 'A'
 )
 
 func (c *Cell) Scan(state fmt.ScanState, verb rune) error {
@@ -36,6 +37,10 @@ func (c *Cell) Scan(state fmt.ScanState, verb rune) error {
 	} else if r == F {
 
 		*c = Fire
+
+	} else if r == R {
+
+		*c = Ready
 
 	} else if r == A {
 
@@ -65,6 +70,8 @@ func (c Cell) String() string {
 		r = S
 	} else if c == Ash {
 		r = A
+	} else if c == Ready {
+		r = R
 	}
 
 	return fmt.Sprintf("%c", r)
