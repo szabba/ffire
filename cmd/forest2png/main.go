@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/szabba/ffire/colorval"
 	"github.com/szabba/ffire/forest"
 	"image"
 	"image/color"
@@ -14,16 +15,16 @@ func cellColor(cell forest.Cell) color.Color {
 
 	if cell == forest.Tree {
 
-		return color.NRGBA{0, 127, 0, 255}
+		return colorval.NRGBA{color.NRGBA{0, 127, 0, 255}}
 	} else if cell == forest.Space {
-		return color.NRGBA{127, 255, 50, 255}
+		return colorval.NRGBA{color.NRGBA{127, 255, 50, 255}}
 	} else if cell == forest.Ash {
-		return color.NRGBA{0, 0, 0, 255}
+		return colorval.NRGBA{color.NRGBA{0, 0, 0, 255}}
 	} else if cell == forest.Fire {
-		return color.NRGBA{255, 0, 0, 255}
+		return colorval.NRGBA{color.NRGBA{255, 0, 0, 255}}
 	}
 
-	return color.NRGBA{255, 0, 255, 255}
+	return colorval.NRGBA{color.NRGBA{255, 0, 255, 255}}
 }
 
 var (
