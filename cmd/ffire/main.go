@@ -104,7 +104,7 @@ func (auto *Automaton) Run(
 	}
 }
 
-func SetFireToTheRain() func(forest.Cell, []forest.Cell) forest.Cell {
+func Spread() func(forest.Cell, []forest.Cell) forest.Cell {
 
 	rng := rand.New(rand.NewSource(time.Now().Unix()))
 
@@ -172,7 +172,7 @@ func main() {
 	run := 0
 	auto.Run(
 		steps,
-		SetFireToTheRain(),
+		Spread(),
 		func(then, now forest.Grid) {
 
 			run++
