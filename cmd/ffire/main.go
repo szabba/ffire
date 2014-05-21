@@ -104,45 +104,6 @@ func (auto *Automaton) Run(
 	}
 }
 
-func Hell(c forest.Cell, ns []forest.Cell) forest.Cell {
-
-	return forest.Fire
-}
-
-func Spread(c forest.Cell, ns []forest.Cell) forest.Cell {
-
-	if c == forest.Space || c == forest.Ash {
-		return c
-	}
-
-	fires := 0
-	if c == forest.Fire {
-
-		fires++
-	}
-	for _, n := range ns {
-		if n == forest.Fire {
-
-			fires++
-		}
-	}
-
-	if c == forest.Tree {
-
-		if fires > 0 {
-
-			return forest.Fire
-		}
-		return forest.Tree
-	}
-
-	if fires > 6 {
-
-		return forest.Ash
-	}
-	return forest.Fire
-}
-
 func SetFireToTheRain() func(forest.Cell, []forest.Cell) forest.Cell {
 
 	rng := rand.New(rand.NewSource(time.Now().Unix()))
