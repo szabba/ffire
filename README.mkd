@@ -1,0 +1,5 @@
+# Forest Fire
+
+A celluar automaton simulation of forest fire.
+
+![Gifs are nice, aren't they?](forest.gif)
