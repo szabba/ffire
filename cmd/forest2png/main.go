@@ -11,34 +11,48 @@ import (
 	"os"
 )
 
-func cellColor(cell forest.Cell) color.Color {
-
-	if cell == forest.Tree {
-
-		return colorval.NRGBA{color.NRGBA{0, 127, 0, 255}}
-	} else if cell == forest.Space {
-		return colorval.NRGBA{color.NRGBA{127, 255, 50, 255}}
-	} else if cell == forest.Ash {
-		return colorval.NRGBA{color.NRGBA{0, 0, 0, 255}}
-	} else if cell == forest.Fire {
-		return colorval.NRGBA{color.NRGBA{255, 0, 0, 255}}
-	}
-
-	return colorval.NRGBA{color.NRGBA{255, 0, 255, 255}}
-}
-
 var (
 	maxZeros   int
 	nameFormat string
+
+	treeColor  = colorval.NRGBA{color.NRGBA{0, 127, 0, 255}}
+	spaceColor = colorval.NRGBA{color.NRGBA{127, 255, 50, 255}}
+	fireColor  = colorval.NRGBA{color.NRGBA{255, 0, 0, 255}}
+	ashColor   = colorval.NRGBA{color.NRGBA{127, 127, 127, 255}}
+	errorColor = colorval.NRGBA{color.NRGBA{255, 0, 255, 255}}
 )
 
 func init() {
 
 	flag.IntVar(&maxZeros, "zeros", 4, "How many zeros leading zeros to put in filenames?")
 
+	flag.Var(&treeColor, "tree-color", "The color of trees")
+	flag.Var(&spaceColor, "space-color", "The color of free space")
+	flag.Var(&fireColor, "fire-color", "The color of fire")
+	flag.Var(&ashColor, "ash-color", "The color of ashes")
+	flag.Var(&errorColor, "err-color", "Color for errnoerously encoded cells")
+
 	flag.Parse()
 
 	nameFormat = fmt.Sprintf("forest_%%0%dd.png", maxZeros)
+}
+
+func cellColor(cell forest.Cell) color.Color {
+
+	if cell == forest.Tree {
+		return treeColor
+
+	} else if cell == forest.Space {
+		return spaceColor
+
+	} else if cell == forest.Ash {
+		return ashColor
+
+	} else if cell == forest.Fire {
+		return fireColor
+	}
+
+	return errorColor
 }
 
 func main() {
